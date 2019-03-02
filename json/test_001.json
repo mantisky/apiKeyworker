@@ -1,32 +1,32 @@
 [
   {
-    "setup":{
-      "status":true,
-      "base_url":"https://172.16.140.147:8443/dsmp"
+    "config":{
+      "name":"装置注册",
+      "status":true
     }
   },
   {
     "test":{
       "name":"登录系统",
       "status":true,
-      "url":"/login/login.do?fp=1",
-      "method":"POST",
       "args":{
+        "url":"https://172.16.140.147:8443/dsmp/login/login.do?fp=1",
+        "method":"POST",
         "data":{
           "username": "admin",
           "kwd": "Admin123",
         },
         "headers":{
-            "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:61.0) Gecko/20100101 Firefox/61.0",
-            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-            "X-Requested-With": "XMLHttpRequest"
-          }
+          "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:61.0) Gecko/20100101 Firefox/61.0",
+          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+          "X-Requested-With": "XMLHttpRequest"
         }
-      },
+      }
+    },
     "step":[
-      ["登录请求", "Requests", "$response", ["$data", "$headers"]],
+      ["登录请求", "Requests", "$response", ["$method", "$url", "$data", "$headers"]],
       ["提取status_code", "Eval", "$status_code", "$response.status_code"],
-      ["判断是否登录状态码", "Assert", ["eq", "$status_code", 200]],
+      ["判断状态码", "Assert", ["eq", "$status_code", 200]],
       ["提取response.text", "Eval", "$resp_text", "$response.text"],
       ["判断是否包含字段", "Assert", ["search", "$resp_text" ,"系统管理员"]],
       ["执行python语句", "Exec", "print('###--Exec 登录成功--###')"],
@@ -36,16 +36,16 @@
       ["输出到日志", "Log", "Sessuce!!"]
     ],
     "extract":{
-      "cookie":"$headers"
+      "headers":"$headers"
     }
   },
   {
     "test":{
       "name":"查询装置",
       "status":true,
-      "url":"/uideviceinit/queryUiDeviceInitList.do",
-      "method":"POST",
       "args":{
+        "url":"https://172.16.140.147:8443/uideviceinit/queryUiDeviceInitList.do",
+        "method":"POST",
         "data":{
           "corpname":"兆和测试电厂",
           "orgname":"",
@@ -58,10 +58,10 @@
         }
       },
       "step":[
-        ["查询装置", "Requests", "$response", ["$data", "$headers"]],
+        ["查询装置", "Requests", "$response", ["$method", "$url", "$data", "$headers"]],
         ["提取status_code", "Eval", "$status_code", "$response.status_code"],
-        ["判断是否登录状态码", "Assert", ["eq", "$status_code", 200]],
-        ["提取厂站guid", "Eval", "$guid", ""],
+        ["判断状态码", "Assert", ["eq", "$status_code", 200]],
+        ["提取厂站guid", "Eval", "$guid", ""]
       ]
     }
   }
