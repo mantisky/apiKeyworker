@@ -8,7 +8,7 @@
 
 import os
 import re
-from .tool import Analyze
+from tool import TestSuite
 
 
 # 读取json文件夹中所有用例
@@ -20,9 +20,7 @@ class TestGroup():
         ]
         for sui in suite_list:
             with open(sui, 'r', encoding='utf-8') as suite:
-                Analyze(suite)
-
-
+                test_suite = TestSuite(suite)
 
 
 if __name__ == "__main__":
