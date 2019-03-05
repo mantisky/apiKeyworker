@@ -13,42 +13,6 @@ import re
 requests.packages.urllib3.disable_warnings()
 
 
-# 封装requests
-class Requests():
-    def __init__(self, method, url, data, headers):
-        pass
-
-
-# 封装eval方法
-class Eval():
-    def __init__(self, code):
-        pass
-
-
-# 封装exec方法
-class Exec():
-    def __init__(self, code):
-        pass
-
-
-# 封装断言
-class Assert():
-    def __init__(self, type, args1, args2):
-        pass
-
-
-# 封装字典操作
-class Dict():
-    def __init__(self):
-        pass
-
-
-# 封装输出操作
-class Output():
-    def __init__(self, type, args):
-        pass
-
-
 # 解析用例套件
 class TestSuite():
     def __init__(self, suite_json):
@@ -67,6 +31,7 @@ class TestSuite():
 
     # 运行用例套件
     def runner(self):
+        self.suite_args = {}
         suite_status = False
         for case in self.suite_json:
             if "config" in case:
@@ -84,7 +49,7 @@ class TestSuite():
                 if case_status:
                     case_name = case['name']
                     print("--执行case--: ", case_name)
-                    self.suite_args = case['args']
+                    self.suite_args.update(case['args'])
                     print("###suite_args###", self.suite_args)
 
                     step = case['step']
@@ -111,14 +76,46 @@ class TestSuite():
 
 
                 if type == 'Requests':
-                    pass
+                    return_value = step[2]
+                    args_name = ['method', 'url', 'data', 'headers']
+                    args_value = step[3]
+                    quests_dict = dict(zip(args_name, args_value))
+
+                    resp = self.kw_requests(quests_dict)
+                    exec('{} = resp'.format(return_value))
+
                 elif type == 'Eval':
-                    pass
+                    return_value = step[2]
+                    code = step[3]
+
+                    resp = self.kw_eval(code)
+                    exec('{} = resp'.format(return_value))
+
+                elif type == 'Exec':
+                    return_value = step[2]
+                    code = step[3]
+
+                    self.kw_exec(code)
+
                 elif type == 'Assert':
+                    return_value = step[2]
+                    args_name = ['type', 'key', 'value']
+                    args_value = step[3]
+                    quests_dict = dict(zip(args_name, args_value))
+
+                    self.kw_assert(quests_dict)
+
+                elif type == 'AddToDict':
+                    key = step[3][1]
+                    value = step[3][2]
+
+                    resp = self.kw_dict(type, key, value)
+                    exec('{} = resp'.format(return_value))
+
+                elif type == 'Print':
                     pass
-
-
-
+                elif type == 'Log':
+                    pass
 
     # 提取用例间传递的数据
     def extract(self, extract):
@@ -129,6 +126,33 @@ class TestSuite():
         self.suite_args = suite_args
 
 
+
+    # 封装requests
+    def kw_requests(self, **kwargs):
+        # return response
+        pass
+
+    # 封装eval方法
+    def kw_eval(self, code):
+        # return eval_value
+        pass
+
+    # 封装exec方法
+    def kw_exec(self, code):
+        pass
+
+    # 封装断言
+    def kw_assert(self, **kwargs):
+        pass
+
+    # 封装字典操作
+    def kw_dict(self, type, key, value):
+        # 返回操作后的字典
+        pass
+
+    # 封装输出操作
+    def kw_output(self, tyep, value):
+        pass
 
 
 if __name__ == "__main__":
