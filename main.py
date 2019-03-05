@@ -21,6 +21,7 @@ class TestGroup():
         for sui in suite_list:
             with open(sui, 'r', encoding='utf-8') as suite:
                 test_suite = TestSuite(suite)
+                test_suite.runner()
 
 
 if __name__ == "__main__":
